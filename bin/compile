@@ -38,6 +38,11 @@ else
   channel=stable
 fi
 
+# Detect google chrome version
+if [ -f $ENV_DIR/GOOGLE_CHROME_VERSION ]; then
+  version=$(cat $ENV_DIR/GOOGLE_CHROME_VERSION)
+fi
+
 # Setup bin and shim locations for desired channel, and detect invalid channels
 case "$channel" in
   "stable")
@@ -108,7 +113,11 @@ fi
 
 topic "Installing Google Chrome from the $channel channel."
 
-PACKAGES="$PACKAGES https://dl.google.com/linux/direct/google-chrome-${channel}_current_amd64.deb"
+if [ -f $ENV_DIR/GOOGLE_CHROME_VERSION ]; then
+  PACKAGES="$PACKAGES https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-${channel}/google-chrome-${channel}_${version}-1_amd64.deb"
+else
+  PACKAGES="$PACKAGES https://dl.google.com/linux/direct/google-chrome-${channel}_current_amd64.deb"
+fi
 
 APT_CACHE_DIR="$CACHE_DIR/apt/cache"
 APT_STATE_DIR="$CACHE_DIR/apt/state"
